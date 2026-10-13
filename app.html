@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Swing set math - calculators</title>
+<style>
+  :root { --accent: #3d8a3d; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Georgia, 'Times New Roman', serif; background: #f8f5f1; color: #2c2520; line-height: 1.55; }
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; color: var(--accent); }
+  .lede { margin: 0 0 14px; max-width: 640px; }
+  .note { background: #fff; border: 1px solid #e4d8cd; border-left: 4px solid var(--accent); border-radius: 6px; padding: 12px 16px; font-size: 0.9rem; margin: 0 0 28px; max-width: 720px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+  section { background: #fff; border: 1px solid #e4d8cd; border-radius: 8px; padding: 20px 22px; }
+  h2 { font-size: 1.15rem; margin: 0 0 6px; }
+  .hint { font-size: 0.9rem; color: #8a7563; margin: 0 0 14px; }
+  label { display: block; font-size: 0.9rem; margin: 10px 0 3px; }
+  input { width: 100%; padding: 8px 10px; font-size: 1rem; border: 1px solid #cdbbab; border-radius: 5px; font-family: inherit; }
+  button { margin-top: 16px; width: 100%; padding: 11px; background: var(--accent); color: #fff; border: 0; border-radius: 6px; font-size: 1rem; cursor: pointer; font-family: inherit; }
+  button:hover { filter: brightness(1.08); }
+  .out { margin-top: 14px; font-size: 1rem; min-height: 1.4em; }
+  .out.err { color: #a32222; }
+  footer { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; font-size: 0.85rem; color: #b3a496; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Swing set math</h1>
+  <p class="lede">The beam names the swings, the height names the clearance, and the seat names the chain. Exact arithmetic, every borrowed number labeled.</p>
+  <div class="note">Illustrative planning arithmetic only. Every bay, ratio and seat height is a labeled default you can change; real sets follow the manufacturer's spacing, anchoring and fall-surface rules.</div>
+  <div class="grid">
+    <section>
+      <h2>Swing plan</h2>
+      <p class="hint">The beam names the swings.</p>
+      <label for="s-b">Beam length (cm)</label>
+      <input id="s-b" type="number" value="400" min="0" step="0.5">
+      <label for="s-p">Labeled swing bay (cm)</label>
+      <input id="s-p" type="number" value="120" min="0" step="1">
+      <button id="s-go">Count the swings</button>
+      <div class="out" id="s-out"></div>
+    </section>
+    <section>
+      <h2>Clearance plan</h2>
+      <p class="hint">The height names the clearance.</p>
+      <label for="c-h">Hang height (cm)</label>
+      <input id="c-h" type="number" value="210" min="0" step="0.5">
+      <label for="c-r">Labeled ratio (x)</label>
+      <input id="c-r" type="number" value="2" min="0" step="0.1">
+      <button id="c-go">Measure the clearance</button>
+      <div class="out" id="c-out"></div>
+    </section>
+    <section>
+      <h2>Chain plan</h2>
+      <p class="hint">The seat names the chain.</p>
+      <label for="h-b">Bar height (cm)</label>
+      <input id="h-b" type="number" value="210" min="0" step="0.5">
+      <label for="h-s">Seat height (cm)</label>
+      <input id="h-s" type="number" value="40" min="0" step="0.5">
+      <button id="h-go">Size the chain</button>
+      <div class="out" id="h-out"></div>
+    </section>
+  </div>
+</main>
+<footer>Built by the app factory. <a href="index.html">About</a> &middot; <a href="https://github.com/iLanis-agent/swingsetmath">Source</a></footer>
+<script src="engine.js"></script>
+<script>
+function num(id){ return parseFloat(document.getElementById(id).value); }
+function show(id, r, render){
+  var el = document.getElementById(id);
+  if (r.error) { el.textContent = r.error; el.classList.add('err'); }
+  else { el.textContent = render(r); el.classList.remove('err'); }
+}
+document.getElementById('s-go').addEventListener('click', function(){
+  var a=[num('s-b'),num('s-p')];
+  show('s-out', SwingsetMath.swingPlan.apply(null,a), function(r){ return SwingsetMath.renderSwing.apply(null,[r].concat(a)); });
+});
+document.getElementById('c-go').addEventListener('click', function(){
+  var a=[num('c-h'),num('c-r')];
+  show('c-out', SwingsetMath.clearancePlan.apply(null,a), function(r){ return SwingsetMath.renderClearance.apply(null,[r].concat(a)); });
+});
+document.getElementById('h-go').addEventListener('click', function(){
+  var a=[num('h-b'),num('h-s')];
+  show('h-out', SwingsetMath.chainPlan.apply(null,a), function(r){ return SwingsetMath.renderChain.apply(null,[r].concat(a)); });
+});
+</script>
+</body>
+</html>
